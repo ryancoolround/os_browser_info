@@ -1,68 +1,90 @@
+async function getBrowserInfo() {
+  const userAgent = navigator.userAgent;
+
+  if (navigator.brave && typeof navigator.brave.isBrave === "function") {
+    const isBrave = await navigator.brave.isBrave();
+    if (isBrave) return "Браузер: Brave";
+  }
+
+  if (userAgent.includes("Firefox")) {
+    return "Браузер: Firefox";
+  } else if (userAgent.includes("OPR") || userAgent.includes("Opera")) {
+    return "Браузер: Opera";
+  } else if (userAgent.includes("Edg")) {
+    return "Браузер: Microsoft Edge";
+  } else if (userAgent.includes("Chrome") && !userAgent.includes("Edg") && !userAgent.includes("OPR")) {
+    return "Браузер: Chrome";
+  } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+    return "Браузер: Safari";
+  }
+
+  return "Браузер: Неизвестный";
+}
+
 function getOSName() {
-  var userAgent = navigator.userAgent;
-  var osName = "Неизвестная ОС";
-  
-  if (userAgent.indexOf("Win") != -1) {
+  const userAgent = navigator.userAgent;
+  const platform = navigator.platform || '';
+  let osName = "Неизвестная ОС";
+
+  if (userAgent.includes("Windows")) {
     osName = "Windows";
-    if (userAgent.indexOf("Windows NT 10.0") != -1) {
-      osName += " 10";
-    } else if (userAgent.indexOf("Windows NT 6.3") != -1) {
+    if (userAgent.includes("Windows NT 10.0")) {
+      if (userAgent.includes("Windows 11") || userAgent.includes("WV") || userAgent.includes("rv:11.")) {
+        osName += " 11";
+      } else {
+        osName += " 10";
+      }
+    } else if (userAgent.includes("Windows NT 6.3")) {
       osName += " 8.1";
-    } else if (userAgent.indexOf("Windows NT 6.2") != -1) {
+    } else if (userAgent.includes("Windows NT 6.2")) {
       osName += " 8";
-    } else if (userAgent.indexOf("Windows NT 6.1") != -1) {
+    } else if (userAgent.includes("Windows NT 6.1")) {
       osName += " 7";
-    } else if (userAgent.indexOf("Windows NT 6.0") != -1) {
+    } else if (userAgent.includes("Windows NT 6.0")) {
       osName += " Vista";
-    } else if (userAgent.indexOf("Windows NT 5.1") != -1 || userAgent.indexOf("Windows XP") != -1) {
+    } else if (userAgent.includes("Windows NT 5.1") || userAgent.includes("Windows XP")) {
       osName += " XP";
     }
-  } else if (userAgent.indexOf("Mac") != -1) {
+  } else if (userAgent.includes("Ubuntu") || platform.toLowerCase().includes("ubuntu")) {
+    osName = "Ubuntu Linux";
+  } else if (userAgent.includes("Linux")) {
+    if (userAgent.includes("X11")) {
+      osName = "Linux (возможно Ubuntu)";
+    } else {
+      osName = "Linux";
+    }
+  } else if (userAgent.includes("Mac")) {
     osName = "Macintosh";
-  } else if (userAgent.indexOf("Linux") != -1) {
-    osName = "Linux";
-  } else if (userAgent.indexOf("Android") != -1) {
+  } else if (userAgent.includes("Android")) {
     osName = "Android";
-  } else if (userAgent.indexOf("like Mac") != -1) {
+  } else if (userAgent.includes("like Mac")) {
     osName = "iOS";
-  } else if (userAgent.indexOf("FreeBSD") != -1) {
+  } else if (userAgent.includes("FreeBSD")) {
     osName = "FreeBSD";
-  } else if (userAgent.indexOf("OpenBSD") != -1) {
+  } else if (userAgent.includes("OpenBSD")) {
     osName = "OpenBSD";
-  } else if (userAgent.indexOf("NetBSD") != -1) {
+  } else if (userAgent.includes("NetBSD")) {
     osName = "NetBSD";
-  } else if (userAgent.indexOf("SunOS") != -1) {
+  } else if (userAgent.includes("SunOS")) {
     osName = "Solaris";
-  } else if (userAgent.indexOf("OS/2") != -1) {
+  } else if (userAgent.includes("OS/2")) {
     osName = "OS/2";
-  } else if (userAgent.indexOf("BeOS") != -1) {
+  } else if (userAgent.includes("BeOS")) {
     osName = "BeOS";
-  } else if (userAgent.indexOf("Chrome OS") != -1) {
+  } else if (userAgent.includes("CrOS")) {
     osName = "Chrome OS";
   }
 
   return osName;
 }
 
-function getBrowserInfo() {
-  var userAgent = navigator.userAgent;
-  var browserInfo = "Браузер: Неизвестный";
+// Печать данных в HTML
+(async function () {
+  const browser = await getBrowserInfo();
+  const os = getOSName();
+  const now = new Date().toLocaleString();
 
-  if (userAgent.indexOf("Firefox") != -1) {
-    browserInfo = "Браузер: Firefox";
-  } else if (userAgent.indexOf("OPR") != -1 || userAgent.indexOf("Opera") != -1) {
-    browserInfo = "Браузер: Opera";
-  } else if (userAgent.indexOf("Edg") != -1) {
-    browserInfo = "Браузер: Microsoft Edge";
-  } else if (userAgent.indexOf("Chrome") != -1) {
-    browserInfo = "Браузер: Chrome";
-  } else if (userAgent.indexOf("Safari") != -1) {
-    browserInfo = "Браузер: Safari";
-  }
-
-  return browserInfo;
-}
-
-document.write('Твоя ОС: ' + getOSName() + '<br>');
-document.write(getBrowserInfo() + '<br>');
-document.write('Текущее время: ' + new Date().toLocaleString());
+  document.write(`Твоя ОС: ${os}<br>`);
+  document.write(`${browser}<br>`);
+  document.write(`Текущее время: ${now}`);
+})();
